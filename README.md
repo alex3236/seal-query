@@ -1,8 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Seal Query System
+
+A Next.js application for querying seal records from Lark Bitable with builtin caching, rate limiting, and concurrency control.
+
+## Project Overview
+
+This application provides a simple interface for users to search and retrieve seal records by timestamp. The system connects to Feishu Bitable API to fetch data, implements caching for improved performance, and includes robust rate limiting and concurrency control to prevent API abuse.
+
+## Features
+
+- **Search by Timestamp**: Users can enter a timestamp to query specific seal records
+- **Caching System**: Implements in-memory caching to reduce API calls and improve response times
+- **Rate Limiting**: Controls the number of API requests per second to comply with API limitations
+- **Concurrency Control**: Limits the number of concurrent requests to maintain system stability
+- **Dark Mode Support**: Offers both light and dark theme options
+- **Error Handling**: Provides user-friendly error messages and graceful degradation
+- **Responsive Design**: Works well on both desktop and mobile devices
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js (v18+ recommended)
+- npm, yarn, pnpm, or bun
+- Lark Developer account with API access
+
+### Development
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+# or
+bun install
+```
+
+Then configure the environment variables:
+
+```bash
+cp .env.example .env
+```
+
+Edit the `.env` file with your specific values.
+
+After that, run the development server:
 
 ```bash
 npm run dev
@@ -14,23 +56,17 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The application requires the following environment variables:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `FEISHU_ACCESS_TOKEN` | Your Feishu API access token | Required |
+| `APP_TOKEN` | Your Feishu Bitable app token | Required |
+| `TABLE_ID` | Your Feishu Bitable table ID | Required |
+| `VIEW_ID` | Your Feishu Bitable view ID | Required |
+| `CACHE_TTL_SECONDS` | Cache time-to-live in seconds (-1 for permanent) | 60 |
+| `MAX_CONCURRENT_REQUESTS` | Maximum number of concurrent API requests | 5 |
+| `MAX_REQUESTS_PER_SECOND` | Maximum number of API requests per second | 10 |
+| `REQUEST_QUEUE_TIMEOUT` | Request queue timeout in milliseconds | 30000 |
