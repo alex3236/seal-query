@@ -4,10 +4,7 @@ import { QRCodeSVG } from 'qrcode.react';
 import { useState, useEffect } from 'react';
 
 export default function TOTPPage() {
-    // const [totp, setTOTP] = useState('');
-    // 只在客户端挂载后生成 secret，避免服务端与客户端不一致导致刷新
     const [secret, setSecret] = useState<string>('');
-    // 新增状态：记录验证结果
     const [verifyStatus, setVerifyStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
     useEffect(() => {

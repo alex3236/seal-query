@@ -8,12 +8,12 @@ export default function PrintPage() {
   document.title = '封箱贴打印';
 
   useEffect(() => {
-    // 只在组件首次加载时生成一次code
+    // Generate new codes when component mounts
     const timestampSec = Math.floor(Date.now() / 1000);
     const { codeA, codeB } = makeCode(timestampSec);
     setCodes({ timestamp: timestampSec, codeA, codeB });
     console.log(timestampSec, codeA, codeB);
-  }, []); // 空依赖数组确保只执行一次
+  }, []); // Empty dependency array ensures it runs only once on mount
 
   return (
     <>

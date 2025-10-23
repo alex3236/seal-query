@@ -1,19 +1,19 @@
 import { authenticator } from 'otplib';
 
 /**
- * 验证TOTP码是否有效
- * @param token - 用户输入的TOTP码
- * @param secret - 用于验证的密钥
- * @returns 验证结果
+ * Verify whether the TOTP code is valid
+ * @param token - TOTP code entered by the user
+ * @param secret - Secret key used for verification
+ * @returns Verification result
  */
 export function verifyTOTP(token: string, secret: string): boolean {
   try {
-    // 验证token格式
+    // Validate token format
     if (!/^\d{6}$/.test(token)) {
       return false;
     }
     
-    // 验证TOTP码
+    // Verify TOTP code
     return authenticator.check(token, secret);
   } catch (error) {
     console.error('TOTP verification error:', error);
@@ -22,8 +22,8 @@ export function verifyTOTP(token: string, secret: string): boolean {
 }
 
 /**
- * 从环境变量获取TOTP密钥
- * @returns TOTP密钥
+ * Get TOTP secret from environment variable
+ * @returns TOTP secret
  */
 export function getTOTPSecret(): string {
   return process.env.TOTP_SECRET || 'default_fallback_secret';

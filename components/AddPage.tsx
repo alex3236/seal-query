@@ -2,16 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import SVGLogo from "@/components/Logo";
-import Link from "next/link";
 import InputOTP from "./InputOTP";
 import { makeCode } from "@/lib/codeVerification";
 
 export default function AddPage() {
-  const router = useRouter();
   const [formData, setFormData] = useState({
     Name: "",
-    SealDate: new Date().toISOString().slice(0, 16), // 默认当前日期和时间
+    SealDate: new Date().toISOString().slice(0, 16),
     TrackingNum: "",
     Type: "New",
     totp: ""
@@ -22,7 +19,6 @@ export default function AddPage() {
   const [codes, setCodes] = useState<{ codeA: string | null, codeB: string | null }>({ codeA: null, codeB: null });
 
   useEffect(() => {
-    // 记录页面加载时间（秒级时间戳）
     setPageLoadTime(Date.now());
   }, []);
 
@@ -47,7 +43,6 @@ export default function AddPage() {
     setSubmitSuccess(null);
 
     try {
-      // 转换日期为毫秒时间戳
       const sealDateMs = new Date(formData.SealDate).getTime();
 
       if (isNaN(sealDateMs)) {
@@ -55,7 +50,6 @@ export default function AddPage() {
         return;
       }
 
-      // 准备提交数据
       const submitData = {
         Name: formData.Name,
         SealDate: sealDateMs,
@@ -65,7 +59,6 @@ export default function AddPage() {
         totp: formData.totp
       };
 
-      // 发送到API进行处理
       const response = await fetch('/api/add', {
         method: 'POST',
         headers: {

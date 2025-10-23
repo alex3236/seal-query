@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import SVGLogo from "@/components/Logo";
 import Link from "next/link";
 import InputOTP from "./InputOTP";
-import { BitableRecord } from "@/lib/fetchBitable";
+import { BitableRecord } from "@/lib/bitableApi";
 
 function formatSealDate(ms?: number | null) {
   if (ms == null) return "";

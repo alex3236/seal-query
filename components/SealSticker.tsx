@@ -1,6 +1,5 @@
 import React from "react";
 import {QRCodeSVG} from "qrcode.react";
-import SVGLogo from "@/components/Logo";
 
 export type SealStickerProps = {
   /** 要编码到二维码的文本 */

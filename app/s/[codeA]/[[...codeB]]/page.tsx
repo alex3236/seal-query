@@ -1,6 +1,6 @@
 import React from "react";
 import SearchPage from "@/components/SearchPage";
-import { fetchByTimestamp } from "@/lib/fetchBitable";
+import { fetchByTimestamp } from "@/lib/bitableApi";
 import { verifyCode } from "@/lib/codeVerification";
 
 /**
