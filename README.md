@@ -55,18 +55,3 @@ pnpm dev
 # or
 bun dev
 ```
-
-## Environment Variables
-
-The application requires the following environment variables:
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `FEISHU_ACCESS_TOKEN` | Your Feishu API access token | Required |
-| `APP_TOKEN` | Your Feishu Bitable app token | Required |
-| `TABLE_ID` | Your Feishu Bitable table ID | Required |
-| `VIEW_ID` | Your Feishu Bitable view ID | Required |
-| `CACHE_TTL_SECONDS` | Cache time-to-live in seconds (-1 for permanent) | 60 |
-| `MAX_CONCURRENT_REQUESTS` | Maximum number of concurrent API requests | 5 |
-| `MAX_REQUESTS_PER_SECOND` | Maximum number of API requests per second | 10 |
-| `REQUEST_QUEUE_TIMEOUT` | Request queue timeout in milliseconds | 30000 |

@@ -4,14 +4,13 @@ import { fetchByTimestamp } from "@/lib/fetchBitable";
 import { verifyCode } from "@/lib/codeVerification";
 
 /**
- * Dynamic route handler for /s/[codeA]?v=[codeB]
+ * Dynamic route handler for /s/[codeA]/[codeB]
  */
-export default async function CodePage({ params, searchParams }: { 
-  params:  Promise<{ codeA: string }>,
-  searchParams: Promise<{ v?: string }>
+export default async function CodePage({ params }: {
+  params: Promise<{ codeA: string, codeB: string[] }>
 }) {
-  const codeA = (await params).codeA;
-  const codeB = (await searchParams).v;
+  const { codeA, codeB: codeBArray } = await params;
+  const codeB = codeBArray?.[0] ?? null;
   let error: string | null = null;
   let res: any | null = null;
 
@@ -26,19 +25,26 @@ export default async function CodePage({ params, searchParams }: {
       break;
     }
 
-    res = timestamp ? await fetchByTimestamp(timestamp) : null;
+    if (!timestamp) {
+      error = "查询失败：时间戳无效";
+      break;
+    }
+
+    res = await fetchByTimestamp(timestamp);
 
     if (res && (res as any).error) {
       error = (res as any).message ?? "查询失败：未知错误";
       break;
     }
   } while (false);
-  
 
-  return <SearchPage 
-    codeA={codeA} 
+  console.log(res)
+
+
+  return <SearchPage
+    codeA={codeA}
     codeB={codeB}
-    result={res} 
-    error={error} 
+    result={res}
+    error={error}
   />;
 }

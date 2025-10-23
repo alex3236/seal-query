@@ -47,7 +47,7 @@ export function cacheGet(key: string): any | null {
 
 export function cacheSet(key: string, data: any, ttlSeconds?: number): void {
   let ttl = typeof ttlSeconds === "number" ? ttlSeconds : globalThis.__shipmentCache!.ttlSeconds;
-  if (data.total === 0)
+  if (data?.total === 0)
     ttl = 60;
   const isPermanent = ttl === -1;
   const expiresAt = isPermanent ? Number.MAX_SAFE_INTEGER : Date.now() + ttl * 1000;

@@ -21,10 +21,32 @@ const requestQueue: Array<() => Promise<void>> = [];
 let requestTimestamps: number[] = [];
 let rateLimitInterval: NodeJS.Timeout | null = null;
 
+export type TypedStr = {
+  type: string;
+  text: string;
+}
+
+export type BitableRecord = {
+  record_id?: string;
+  fields: {
+    Name?: TypedStr[],
+    SealDate?: number,
+    Timestamp?: {
+      type: number,
+      value: TypedStr[]
+    },
+    TrackingNum?: TypedStr[],
+    Type?: "Old" | "New" | null
+  }
+}
+
 export type BitableResponse = {
   code: number;
   msg?: string;
-  data?: any;
+  data?: {
+    items?: [BitableRecord];
+    record?: BitableRecord;
+  };
 };
 
 /**
@@ -68,7 +90,7 @@ async function waitForRateLimit(): Promise<void> {
 async function executeWithConcurrencyControlAndRateLimit<T>(fn: () => Promise<T>): Promise<T> {
   // Initialize rate limit cleanup timer
   initRateLimitCleanup();
-  
+
   return new Promise((resolve, reject) => {
     // Set queue timeout
     const timeoutId = setTimeout(() => {
@@ -79,7 +101,7 @@ async function executeWithConcurrencyControlAndRateLimit<T>(fn: () => Promise<T>
       try {
         // Wait for rate limit allowance
         await waitForRateLimit();
-        
+
         // Increase concurrent count
         currentRequests++;
         const result = await fn();
@@ -115,13 +137,13 @@ async function executeWithConcurrencyControlAndRateLimit<T>(fn: () => Promise<T>
 async function getAppAccessToken(): Promise<string> {
   const CACHE_KEY = 'feishu_app_access_token';
   const cachedToken = cacheGet(CACHE_KEY);
-  
+
   if (cachedToken) {
     return cachedToken;
   }
 
   try {
-    const response = await fetch('https://open.feishu.cn/open-apis/auth/v3/app_access_token/internal', {
+    const response = await fetch('https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=utf-8'
@@ -137,17 +159,17 @@ async function getAppAccessToken(): Promise<string> {
     }
 
     const data = await response.json();
-    
-    if (data.code !== 0 || !data.app_access_token) {
+
+    if (data.code !== 0 || !data.tenant_access_token) {
       throw new Error(`Failed to get app_access_token: ${data.msg || 'Unknown error'}`);
     }
 
     // Cache the token with a margin of 30 seconds to account for network latency
     const expireSeconds = Math.max(0, data.expire - 30);
-    cacheSet(CACHE_KEY, data.app_access_token, expireSeconds);
-    
+    cacheSet(CACHE_KEY, data.tenant_access_token, expireSeconds);
+
     console.log(`Got app_access_token expires in ${expireSeconds}s`);
-    return data.app_access_token;
+    return data.tenant_access_token;
   } catch (error) {
     console.error('Failed to get app_access_token:', error);
     throw error;
@@ -226,10 +248,66 @@ export async function fetchByTimestamp(timestamp: string | number): Promise<{ fr
 
     return { fromCache: false, ...json };
   } catch (err: any) {
-    return { 
-      error: true, 
-      message: `Fetch failed: ${err?.message ?? String(err)}`, 
-      code: -1 
+    return {
+      error: true,
+      message: `Fetch failed: ${err?.message ?? String(err)}`,
+      code: -1
+    };
+  }
+}
+
+/**
+ * Submit a new record to Feishu Bitable.
+ * Uses concurrency control and rate limiting.
+ */
+export async function submitBitableRecord(record: BitableRecord): Promise<BitableResponse & { error?: boolean; message?: string }> {
+  if (!APP_ID || !APP_SECRET || !APP_TOKEN || !TABLE_ID) {
+    return {
+      error: true,
+      message: "Missing env vars. Set APP_ID, APP_SECRET, APP_TOKEN, TABLE_ID.",
+      code: -1
+    };
+  }
+
+  try {
+    // 使用并发控制和速率限制执行API请求
+    const json = await executeWithConcurrencyControlAndRateLimit(async () => {
+      const url = `https://open.feishu.cn/open-apis/bitable/v1/apps/${APP_TOKEN}/tables/${TABLE_ID}/records`;
+      const body = record;
+
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 15_000);
+
+      try {
+        const res = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${await getAppAccessToken()}`
+          },
+          body: JSON.stringify(body),
+          signal: controller.signal
+        });
+        clearTimeout(timeout);
+
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error(`Feishu API error: ${res.status} ${text}`);
+        }
+
+        return (await res.json()) as BitableResponse;
+      } catch (err) {
+        clearTimeout(timeout);
+        throw err;
+      }
+    });
+
+    return json;
+  } catch (err: any) {
+    return {
+      error: true,
+      message: `Submit failed: ${err?.message ?? String(err)}`,
+      code: -1
     };
   }
 }

@@ -6,5 +6,5 @@ import SearchPage from "@/components/SearchPage";
  * Accepts ?timestamp=... and performs SSR fetch.
  */
 export default async function Page() {
-  return <SearchPage timestamp={null} result={null} error={null} />;
+  return <SearchPage codeA={null} result={null} error={null} />;
 }

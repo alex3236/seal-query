@@ -1,3 +1,4 @@
+"use client";
 import React, {
   forwardRef,
   useEffect,
@@ -9,7 +10,7 @@ import React, {
 
 type InputOTPProps = Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
-  "onChange" | "value"
+  "onChange" | "value" | "defaultValue"
 > & {
   length: number;
   separator?: string;
@@ -17,6 +18,7 @@ type InputOTPProps = Omit<
   charPattern?: RegExp; // per-character validator
   placeholderChar?: string;
   value?: string; // controlled raw (no separators)
+  defaultValue?: string; // uncontrolled raw (no separators)
   onValueChange?: (raw: string) => void;
   name?: string; // hidden input name for forms
 };
@@ -44,6 +46,7 @@ const InputOTP = forwardRef<HTMLInputElement, InputOTPProps>((props, ref) => {
     charPattern = /^\d$/,
     placeholderChar = "X",
     value: controlledValue,
+    defaultValue,
     onValueChange,
     name,
     className = "",
@@ -61,7 +64,7 @@ const InputOTP = forwardRef<HTMLInputElement, InputOTPProps>((props, ref) => {
     s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const sepRegex = new RegExp(escapeRegExp(separator), "g");
 
-  const [internalRaw, setInternalRaw] = useState("");
+  const [internalRaw, setInternalRaw] = useState(defaultValue || "");
   const composingRef = useRef(false);
 
   const raw = controlledValue !== undefined ? controlledValue : internalRaw;
@@ -157,7 +160,7 @@ const InputOTP = forwardRef<HTMLInputElement, InputOTPProps>((props, ref) => {
     let rawBefore = rawCountBeforeIndex(formattedValue, sel);
     if (rawBefore > newRaw.length) rawBefore = newRaw.length;
 
-    if (controlledValue === undefined) {
+    if (!controlledValue) {
       setInternalRaw(newRaw);
     }
     onValueChange?.(newRaw);
@@ -183,7 +186,7 @@ const InputOTP = forwardRef<HTMLInputElement, InputOTPProps>((props, ref) => {
         setTimeout(() => {
           try {
             el.setSelectionRange(newPos, newPos);
-          } catch {}
+          } catch { }
         }, 0);
       }
     }
@@ -197,7 +200,7 @@ const InputOTP = forwardRef<HTMLInputElement, InputOTPProps>((props, ref) => {
         setTimeout(() => {
           try {
             el.setSelectionRange(newPos, newPos);
-          } catch {}
+          } catch { }
         }, 0);
       }
     }
@@ -219,7 +222,7 @@ const InputOTP = forwardRef<HTMLInputElement, InputOTPProps>((props, ref) => {
     const newRaw = stripAndFilter(formattedValue);
     let rawBefore = rawCountBeforeIndex(formattedValue, sel);
     if (rawBefore > newRaw.length) rawBefore = newRaw.length;
-    if (controlledValue === undefined) setInternalRaw(newRaw);
+    if (!controlledValue) setInternalRaw(newRaw);
     onValueChange?.(newRaw);
     pendingRawCaret.current = rawBefore;
   };
@@ -230,7 +233,7 @@ const InputOTP = forwardRef<HTMLInputElement, InputOTPProps>((props, ref) => {
     const text = e.clipboardData.getData("text");
     const filtered = stripAndFilter(text);
     const merged = (raw + filtered).slice(0, length);
-    if (controlledValue === undefined) setInternalRaw(merged);
+    if (!controlledValue) setInternalRaw(merged);
     onValueChange?.(merged);
     // place caret at end of inserted content
     pendingRawCaret.current = merged.length;
@@ -238,7 +241,7 @@ const InputOTP = forwardRef<HTMLInputElement, InputOTPProps>((props, ref) => {
     setTimeout(() => {
       try {
         inputRef.current?.focus();
-      } catch {}
+      } catch { }
     }, 0);
   };
 
