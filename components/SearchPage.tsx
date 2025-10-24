@@ -2,8 +2,6 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import SVGLogo from "@/components/Logo";
-import Link from "next/link";
 import InputOTP from "./InputOTP";
 import { BitableRecord } from "@/lib/bitableApi";
 
@@ -166,7 +164,7 @@ export default function SearchPage({
                       </div>
                       <div>
                         <div className="text-xs text-gray-500 dark:text-gray-300">打印时间</div>
-                        <div className="font-medium">{formatSealDate(Number(codeA ?? "0") * 1000)}</div>
+                        <div className="font-medium">{formatSealDate(Number(codeA ?? "0"))}</div>
                       </div>
                       <div>
                         <div className="text-xs text-gray-500 dark:text-gray-300">封箱时间</div>
