@@ -2,9 +2,9 @@
 
 import SealSticker from "@/components/SealSticker";
 import assert from "node:assert";
-import {Usable, use, useEffect} from "react";
+import { Usable, use, useEffect } from "react";
 
-export default function PrintSealSticker({params}: {
+export default function PrintSealSticker({ params }: {
   params: Usable<{ codeA: string; codeB: string }>
 }) {
   const p = use(params);
@@ -14,7 +14,8 @@ export default function PrintSealSticker({params}: {
   const codeB = p.codeB;
   const qrValue = `https://seal.alex3236.moe/s/${codeA}`;
   const serialLines: [string, string] = [
-    codeA.slice(0, 8), codeA.slice(8),
+    codeA.slice(0, 4) + ' ' + codeA.slice(4, 8),
+    codeA.slice(8, 12) + ' ' + codeA.slice(12, 16),
   ]
 
   useEffect(() => {
@@ -35,6 +36,6 @@ export default function PrintSealSticker({params}: {
   }, []);
 
   return <div>
-    <SealSticker qrValue={qrValue} serialLines={serialLines} badge={codeB}/>
+    <SealSticker qrValue={qrValue} serialLines={serialLines} badge={codeB} />
   </div>
 }
