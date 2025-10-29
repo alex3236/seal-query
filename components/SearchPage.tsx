@@ -99,7 +99,7 @@ export default function SearchPage({
                 name="codeB"
                 defaultValue={codeB ?? ""}
                 length={5}
-                charPattern={/[A-Za-z0-9]/}
+                charPattern={/[A-Z0-9]/}
                 className="max-w-24"
               />
             </div>
