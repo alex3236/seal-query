@@ -31,10 +31,7 @@ export type BitableRecord = {
   fields: {
     Name?: TypedStr[],
     SealDate?: number,
-    Timestamp?: {
-      type: number,
-      value: TypedStr[]
-    },
+    Timestamp?: number,
     TrackingNum?: TypedStr[],
     Type?: "Old" | "New" | null
   }

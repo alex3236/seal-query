@@ -164,7 +164,7 @@ export default function SearchPage({
                       </div>
                       <div>
                         <div className="text-xs text-gray-500 dark:text-gray-300">打印时间</div>
-                        <div className="font-medium">{formatSealDate(Number(codeA ?? "0"))}</div>
+                        <div className="font-medium">{formatSealDate(fields.Timestamp)}</div>
                       </div>
                       <div>
                         <div className="text-xs text-gray-500 dark:text-gray-300">封箱时间</div>

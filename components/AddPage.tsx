@@ -8,7 +8,7 @@ import { makeCode } from "@/lib/codeVerification";
 export default function AddPage() {
   const [formData, setFormData] = useState({
     Name: "",
-    SealDate: new Date().toISOString().slice(0, 16),
+    SealDate: new Date(Date.now() + 8 * 60 * 60 * 1000).toISOString().slice(0, 16),
     TrackingNum: "",
     Type: "New",
     totp: ""
