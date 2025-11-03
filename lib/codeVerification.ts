@@ -59,14 +59,14 @@ export function makeCode(t: number): { codeA: string; codeB: string } {
   const a = (t * 97 + SIGNATURE_SALT) % M;
   // Convert to 16-digit string, pad with leading zeros if necessary
   const codeA = String(a).padStart(16, '0');
-  
+
   // Calculate HMAC-SHA1
   const h = crypto.createHmac('sha1', SIGNATURE_SECRET)
     .update(Buffer.from(codeA, 'utf8'))
     .digest();
-  
+
   // Perform Base32 encoding, take first 5 characters, replace '=' with 'A'
   const codeB = base32Encode(h).slice(0, 5).replace(/=/g, 'A');
-  
+
   return { codeA, codeB };
 }

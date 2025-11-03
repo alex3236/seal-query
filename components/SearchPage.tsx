@@ -1,6 +1,6 @@
 'use client';
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import InputOTP from "./InputOTP";
 import { BitableRecord } from "@/lib/bitableApi";
@@ -37,28 +37,42 @@ export default function SearchPage({
   error?: string | null;
 }) {
   const router = useRouter();
+  const submitButtonRef = React.useRef<HTMLButtonElement>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget as HTMLFormElement);
     const codeA = formData.get('codeA') as string;
     const codeB = formData.get('codeB') as string;
+    const currentRoute = window.location.pathname;
+    let route = null;
 
     if (codeA.trim()) {
       if (codeB.trim()) {
-        router.push(`/s/${codeA.trim()}/${codeB.trim()}`);
+        route = `/s/${codeA.trim()}/${codeB.trim()}`;
       } else {
-        router.push(`/s/${codeA.trim()}`);
+        route = `/s/${codeA.trim()}`;
       }
     }
+
+    if (route && route !== currentRoute) {
+      submitButtonRef.current?.setAttribute("disabled", "true");
+      router.push(route);
+    }
   };
+
+  useEffect(() => {
+    if (result && submitButtonRef.current) {
+      submitButtonRef.current.disabled = false;
+    }
+  }, [result])
 
   return (
     <>
       <h1 className="text-2xl font-semibold mb-6 text-center">封箱贴查询</h1>
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6 border-3 border-gray-300 dark:border-gray-700 rounded-2xl w-fit mx-auto px-6 py-4">
         <div
-          className="mx-auto max-w-fit w-full bg-white dark:bg-gray-800 rounded-2xl px-4 pt-2 pb-3 border-3 border-gray-300 dark:border-gray-700 mb-2"
+          className="mx-auto max-w-fit w-full bg-white dark:bg-gray-800 px-4 pt-2 pb-3 mb-2"
         >
           <div className="text-center">
             <label
@@ -81,9 +95,8 @@ export default function SearchPage({
           </div>
         </div>
 
-        {/* 下方“小卡片”：CodeB */}
         <div
-          className="mx-auto max-w-fit bg-white dark:bg-gray-800 rounded-xl px-4 pt-2 pb-3 border-3 border-gray-300 dark:border-gray-700 flex flex-col items-center mb-2"
+          className="mx-auto max-w-fit bg-white dark:bg-gray-800 px-4 pt-2 pb-3 flex flex-col items-center mb-2"
         >
           <div className="w-full">
             <label
@@ -100,36 +113,40 @@ export default function SearchPage({
                 defaultValue={codeB ?? ""}
                 length={5}
                 charPattern={/[A-Z0-9]/}
-                className="max-w-24"
+                className="max-w-19"
               />
             </div>
           </div>
         </div>
 
-        {/* 提交按钮 */}
         <div className="mt-2 flex justify-center">
           <button
             type="submit"
-            className="bg-blue-600 text-white px-4 py-2 hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 focus:outline-none rounded-full"
+            ref={submitButtonRef}
+            className="bg-blue-600 text-white px-4 py-2 hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 focus:outline-none rounded-full disabled:bg-blue-400 disabled:cursor-not-allowed"
           >
-            查询
+            {
+              submitButtonRef.current?.disabled ?
+                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                : "查询"
+            }
           </button>
         </div>
       </form>
 
       {error && (
-        <div className="my-4 rounded-full border border-red-300 bg-red-50 p-3 text-red-800">
+        <div className="my-4 rounded-3xl border border-red-300 bg-red-50 p-3 text-red-800 text-center">
           <strong>错误：</strong> {error}
         </div>
       )}
 
       {result && (
         <div className="mt-6">
-          <div className="mb-4 text-sm text-gray-700 dark:text-gray-300 text-center">
+          <div className={`mb-4 text-sm ${result.fromCache ? "text-indigo-600 dark:text-indigo-300" : "text-gray-700 dark:text-gray-300"} text-center`}>
             查询到 <strong>{result.data?.total ?? "—"}</strong> 条记录
-            {result.fromCache ? (
-              <span className="text-xs text-indigo-600 dark:text-indigo-300 ml-2">(缓存)</span>
-            ) : null}
           </div>
 
           {Array.isArray(result.data?.items) && result.data.items.length > 0 ? (

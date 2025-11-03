@@ -92,7 +92,7 @@ const InputOTP = forwardRef<HTMLInputElement, InputOTPSafeProps>(
       let text = e.clipboardData.getData("text");
       if (uppercase) text = text.toUpperCase();
       const filtered = stripAndFilter(text);
-      const merged = (raw + filtered).slice(0, length);
+      const merged = filtered.slice(0, length);
       if (controlledValue == null) setInternalValue(merged);
       onValueChange?.(merged);
     };

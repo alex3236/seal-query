@@ -12,7 +12,7 @@ export function verifyTOTP(token: string, secret: string): boolean {
     if (!/^\d{6}$/.test(token)) {
       return false;
     }
-    
+
     // Verify TOTP code
     return authenticator.check(token, secret);
   } catch (error) {
