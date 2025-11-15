@@ -9,30 +9,30 @@ export type envDesc = string | {
 
 const ENV_VAR_DESCS: Record<string, envDesc> = {
   "APP_ID": {
-    desc: "应用 ID",
+    desc: "Application ID",
     url: "https://open.feishu.cn/document/server-docs/api-call-guide/terminology#b047be0c",
   },
   "APP_SECRET": {
-    desc: "应用密钥",
+    desc: "Application Secret",
     url: "https://open.feishu.cn/document/server-docs/api-call-guide/terminology#1b5fb6cd",
   },
   "APP_TOKEN": {
-    desc: "应用令牌",
+    desc: "Application Token",
     url: "https://open.feishu.cn/document/server-docs/docs/bitable-v1/bitable-overview#-752212c",
   },
   "TABLE_ID": {
-    desc: "表格 ID",
+    desc: "Table ID",
     url: "https://open.feishu.cn/document/server-docs/docs/bitable-v1/bitable-overview#8ff3bb0b",
   },
   "VIEW_ID": {
-    desc: "视图 ID",
+    desc: "View ID",
     url: "https://open.feishu.cn/document/server-docs/docs/bitable-v1/bitable-overview#5b05b8ca",
   },
-  "API_URL_CREATE": "创建记录 API URL",
-  "API_URL_SEARCH": "搜索记录 API URL",
-  "APP_URL_ACCESS_TOKEN": "应用访问令牌 API URL",
+  "API_URL_CREATE": "Create Record API URL",
+  "API_URL_SEARCH": "Search Record API URL",
+  "APP_URL_ACCESS_TOKEN": "Application Access Token API URL",
   "TOTP_SECRET": {
-    desc: "TOTP 密钥",
+    desc: "TOTP Secret",
     url: "/totp",
   },
 }

@@ -72,7 +72,7 @@ export default function SearchPage({
 
   return (
     <>
-      <h1 className="text-2xl font-semibold mb-6 text-center">封箱贴查询</h1>
+      <h1 className="text-2xl font-semibold mb-6 text-center">Seal Sticker Query</h1>
       <form onSubmit={handleSubmit} className="space-y-6 border-3 border-gray-300 dark:border-gray-700 rounded-2xl w-fit mx-auto px-6 py-4">
         <div
           className="mx-auto max-w-fit w-full bg-white dark:bg-gray-800 px-4 pt-2 pb-3 mb-2"
@@ -82,7 +82,7 @@ export default function SearchPage({
               htmlFor="codeA"
               className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
             >
-              封箱贴编号
+              Seal Sticker Number
             </label>
 
             <div className="mx-auto max-w-54">
@@ -106,7 +106,7 @@ export default function SearchPage({
               htmlFor="codeB"
               className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-center"
             >
-              校验码
+              Verification Code
             </label>
 
             <div className="flex justify-center">
@@ -135,7 +135,7 @@ export default function SearchPage({
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                : "查询"
+                : "Query"
             }
           </button>
         </div>
@@ -143,14 +143,14 @@ export default function SearchPage({
 
       {error && (
         <div className="my-4 rounded-3xl border border-red-300 bg-red-50 p-3 text-red-800 text-center">
-          <strong>错误：</strong> {error}
+          <strong>Error:</strong> {error}
         </div>
       )}
 
       {result && (
         <div className="mt-6">
           <div className={`mb-4 text-sm ${result.fromCache ? "text-indigo-600 dark:text-indigo-300" : "text-gray-700 dark:text-gray-300"} text-center`}>
-            查询到 <strong>{result.data?.total ?? "—"}</strong> 条记录
+            Found <strong>{result.data?.total ?? "—"}</strong> records
           </div>
 
           {Array.isArray(result.data?.items) && result.data.items.length > 0 ? (
@@ -171,24 +171,24 @@ export default function SearchPage({
                           "text-yellow-700 dark:text-yellow-300 border-yellow-400 dark:border-yellow-500 bg-yellow-50 dark:bg-yellow-900/30"
                           : "text-green-700 dark:text-green-300 border-green-400 dark:border-green-500 bg-green-50 dark:bg-green-900/30"
                         }`}>
-                        {fields.Type === "Old" ? "二手" : "全新"} | #{rec.record_id}
+                        {fields.Type === "Old" ? "Used" : "New"} | #{rec.record_id}
                       </span>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <div className="text-xs text-gray-500 dark:text-gray-300">物品名称</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-300">Item Name</div>
                         <div className="font-medium">{name}</div>
                       </div>
                       <div>
-                        <div className="text-xs text-gray-500 dark:text-gray-300">物流单号</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-300">Tracking Number</div>
                         <div className="font-medium">{tracking}</div>
                       </div>
                       <div>
-                        <div className="text-xs text-gray-500 dark:text-gray-300">打印时间</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-300">Print Time</div>
                         <div className="font-medium">{formatSealDate(fields.Timestamp)}</div>
                       </div>
                       <div>
-                        <div className="text-xs text-gray-500 dark:text-gray-300">封箱时间</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-300">Seal Time</div>
                         <div className="font-medium">{formatSealDate(fields.SealDate)}</div>
                       </div>
                     </div>
@@ -197,7 +197,7 @@ export default function SearchPage({
               })}
             </div>
           ) : (
-            <div className="text-sm text-gray-600 dark:text-gray-400">未找到任何记录。</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">No records found.</div>
           )}
         </div>
       )}

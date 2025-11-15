@@ -1,7 +1,7 @@
 import AddPage from '@/components/AddPage';
 
 export const metadata = {
-    title: '添加记录',
+    title: 'Add Record',
 };
 
 export default function AddRecordPage() {

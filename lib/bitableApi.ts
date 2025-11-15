@@ -206,9 +206,9 @@ export async function fetchByTimestamp(timestamp: string | number): Promise<{ fr
   }
 
   try {
-    // 使用并发控制和速率限制执行API请求
+    // Use concurrency control and rate limiting to execute API requests
     const json = await executeWithLimit(async () => {
-      // 使用环境变量API_URL_SEARCH，如果未设置则使用默认URL
+      // Use environment variable API_URL_SEARCH, use default URL if not set
       const url = API_URL_SEARCH;
       const body = {
         automatic_fields: false,

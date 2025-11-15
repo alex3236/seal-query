@@ -2,7 +2,7 @@ import TOTPPage from "@/components/TOTPGenerator";
 import { notFound } from "next/navigation";
 
 export const metadata = {
-    title: 'TOTP 生成',
+    title: 'TOTP Generator',
 };
 
 export default function Page() {

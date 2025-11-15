@@ -3,9 +3,9 @@ import { envDesc } from "@/app/(layout)/page";
 export default function InitialSetup({ missingEnvs }: { missingEnvs: Record<string, envDesc> }) {
     return (
         <div>
-            <h1 className="text-2xl font-semibold mb-6 text-center">初始化</h1>
+            <h1 className="text-2xl font-semibold mb-6 text-center">Initialization</h1>
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative font-mono" role="alert">
-                <p>请设置以下环境变量：</p>
+                <p>Please set the following environment variables:</p>
                 <ul className="mt-2 list-disc list-inside font-semibold">
                     {Object.keys(missingEnvs).map((envVar) => (
                         <li key={envVar} className="break-all">

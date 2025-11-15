@@ -21,19 +21,19 @@ export default async function CodePage({ params }: {
     const { valid, timestamp } = verifyCode(codeA, codeB);
 
     if (!valid) {
-      error = "验证码无效，请检查输入";
+      error = "Invalid verification code, please check your input";
       break;
     }
 
     if (!timestamp) {
-      error = "查询失败：时间戳无效";
+      error = "Query failed: Invalid timestamp";
       break;
     }
 
     res = await fetchByTimestamp(timestamp);
 
     if (res && (res as any).error) {
-      error = (res as any).message ?? "查询失败：未知错误";
+      error = (res as any).message ?? "Query failed: Unknown error";
       break;
     }
   } while (false);

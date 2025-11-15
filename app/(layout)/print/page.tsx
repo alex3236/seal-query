@@ -2,7 +2,7 @@ import PrintPage from "@/components/TestPrintSeal";
 import { notFound } from "next/navigation";
 
 export const metadata = {
-  title: "打印封箱贴",
+  title: "Print Seal Sticker",
 }
 
 export default function Page() {

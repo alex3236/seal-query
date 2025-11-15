@@ -9,13 +9,13 @@ export async function POST(request: NextRequest) {
 
     // Validate request data
     if (!body.Name || !body.SealDate || !body.Timestamp || !body.TrackingNum || !body.Type || !body.totp) {
-      return NextResponse.json({ error: '缺少必要参数' }, { status: 400 });
+      return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
     }
 
     // Verify TOTP code
     const totpValid = verifyTOTP(body.totp, getTOTPSecret());
     if (!totpValid) {
-      return NextResponse.json({ error: 'TOTP验证失败，请检查您的验证码' }, { status: 403 });
+      return NextResponse.json({ error: 'TOTP verification failed, please check your verification code' }, { status: 403 });
     }
 
     // Prepare data for adding to Lark table
@@ -32,21 +32,21 @@ export async function POST(request: NextRequest) {
     };
 
     // This only simulates the add operation; in real projects the Lark API needs to be called
-    console.log('准备添加的记录数据:', recordData);
+    console.log('Record data to be added:', recordData);
 
     const response = await submitBitableRecord(recordData);
-    console.log('添加记录响应:', response);
+    console.log('Add record response:', response);
 
     // Check if response is successful
     if (response.code !== 0 || !response.data?.record?.record_id) {
-      return NextResponse.json({ error: '添加记录失败', details: response.msg || '未知错误' }, { status: 400 });
+      return NextResponse.json({ error: 'Failed to add record', details: response.msg || 'Unknown error' }, { status: 400 });
     }
 
     // Simulate success response
-    return NextResponse.json({ success: true, message: '记录添加成功', recordId: response.data?.record?.record_id, timestamp: Number(body.Timestamp || 0) });
+    return NextResponse.json({ success: true, message: 'Record added successfully', recordId: response.data?.record?.record_id, timestamp: Number(body.Timestamp || 0) });
 
   } catch (error) {
-    console.error('添加记录时发生错误:', error);
-    return NextResponse.json({ error: '服务器内部错误' }, { status: 500 });
+    console.error('Error occurred while adding record:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
