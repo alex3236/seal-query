@@ -2,8 +2,8 @@ import crypto from 'crypto';
 import { encode as base32Encode } from 'hi-base32';
 
 // Constant configuration
-const SIGNATURE_SALT = 123456789;
-const SIGNATURE_SECRET = Buffer.from('key', 'utf8');
+const SIGNATURE_SALT = parseInt(process.env.SIGNATURE_SALT || "123456789", 10);
+const SIGNATURE_SECRET = Buffer.from(process.env.SIGNATURE_SECRET || "key", 'utf8');
 const M = 10 ** 16;
 // Precomputed modular inverse of 97
 const INV_97 = 6288659793814433; // This is the result of pow(97, -1, M)

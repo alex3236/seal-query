@@ -23,7 +23,7 @@ export type SealStickerProps = {
  * 直接把这个组件放到页面即可渲染并打印（SVG 使用 mm 单位，能得到真实世界尺寸）。
  */
 export default function SealSticker({
-  qrValue = "https://seal.alex3236.moe/s/1267126712671267",
+  qrValue = "test",
   serialLines = ["0000 1709", "5419 1989"],
   badge = "4G3YG",
   domain = "Alex3236.moe",

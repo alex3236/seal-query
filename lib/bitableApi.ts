@@ -2,8 +2,9 @@ import { cacheGet, cacheSet } from "./cache";
 
 const APP_ID = process.env.APP_ID || "";
 const APP_SECRET = process.env.APP_SECRET || "";
-const APP_TOKEN = process.env.APP_TOKEN || "";
-const TABLE_ID = process.env.TABLE_ID || "";
+const API_URL_CREATE = process.env.API_URL_CREATE || "";
+const API_URL_SEARCH = process.env.API_URL_SEARCH || "";
+const APP_URL_ACCESS_TOKEN = process.env.APP_URL_ACCESS_TOKEN || "";
 const VIEW_ID = process.env.VIEW_ID || "";
 
 // Concurrency control configuration
@@ -46,6 +47,21 @@ export type BitableResponse = {
   };
 };
 
+function checkEnvVars() {
+  if (!APP_ID || !APP_SECRET || !API_URL_CREATE || !API_URL_SEARCH || !VIEW_ID || !APP_URL_ACCESS_TOKEN) {
+    return {
+      error: true,
+      message: "Missing env vars.",
+      code: -1
+    };
+  }
+  return {
+    error: false,
+    message: "",
+    code: 0,
+  };
+}
+
 /**
  * Initialize rate limit cleanup timer
  */
@@ -84,7 +100,7 @@ async function waitForRateLimit(): Promise<void> {
 /**
  * Concurrency control and rate limiting helper - queues requests and executes them according to limits
  */
-async function executeWithConcurrencyControlAndRateLimit<T>(fn: () => Promise<T>): Promise<T> {
+async function executeWithLimit<T>(fn: () => Promise<T>): Promise<T> {
   // Initialize rate limit cleanup timer
   initRateLimitCleanup();
 
@@ -140,7 +156,7 @@ async function getAppAccessToken(): Promise<string> {
   }
 
   try {
-    const response = await fetch('https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal', {
+    const response = await fetch(APP_URL_ACCESS_TOKEN, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=utf-8'
@@ -184,18 +200,16 @@ export async function fetchByTimestamp(timestamp: string | number): Promise<{ fr
     return { fromCache: true, ...cached };
   }
 
-  if (!APP_ID || !APP_SECRET || !APP_TOKEN || !TABLE_ID || !VIEW_ID) {
-    return {
-      error: true,
-      message: "Missing env vars. Set APP_ID, APP_SECRET, APP_TOKEN, TABLE_ID, VIEW_ID.",
-      code: -1
-    };
+  const envCheck = checkEnvVars();
+  if (envCheck.error) {
+    return envCheck;
   }
 
   try {
     // 使用并发控制和速率限制执行API请求
-    const json = await executeWithConcurrencyControlAndRateLimit(async () => {
-      const url = `https://open.feishu.cn/open-apis/bitable/v1/apps/${APP_TOKEN}/tables/${TABLE_ID}/records/search`;
+    const json = await executeWithLimit(async () => {
+      // 使用环境变量API_URL_SEARCH，如果未设置则使用默认URL
+      const url = API_URL_SEARCH;
       const body = {
         automatic_fields: false,
         field_names: ["Timestamp", "Name", "SealDate", "TrackingNum", "Type"],
@@ -258,18 +272,14 @@ export async function fetchByTimestamp(timestamp: string | number): Promise<{ fr
  * Uses concurrency control and rate limiting.
  */
 export async function submitBitableRecord(record: BitableRecord): Promise<BitableResponse & { error?: boolean; message?: string }> {
-  if (!APP_ID || !APP_SECRET || !APP_TOKEN || !TABLE_ID) {
-    return {
-      error: true,
-      message: "Missing env vars. Set APP_ID, APP_SECRET, APP_TOKEN, TABLE_ID.",
-      code: -1
-    };
+  const envCheck = checkEnvVars();
+  if (envCheck.error) {
+    return envCheck;
   }
 
   try {
-    // 使用并发控制和速率限制执行API请求
-    const json = await executeWithConcurrencyControlAndRateLimit(async () => {
-      const url = `https://open.feishu.cn/open-apis/bitable/v1/apps/${APP_TOKEN}/tables/${TABLE_ID}/records`;
+    const json = await executeWithLimit(async () => {
+      const url = API_URL_CREATE;
       const body = record;
 
       const controller = new AbortController();

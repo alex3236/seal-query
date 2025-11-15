@@ -1,4 +1,4 @@
-import TOTPPage from "@/components/TOTPPage";
+import TOTPPage from "@/components/TOTPGenerator";
 import { notFound } from "next/navigation";
 
 export const metadata = {

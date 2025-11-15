@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import InputOTP from "./InputOTP";
 import { makeCode } from "@/lib/codeVerification";
 
@@ -112,7 +111,7 @@ export default function AddPage() {
             htmlFor="SealDate"
             className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
           >
-            封箱日期时间
+            封箱时间
           </label>
           <input
             type="datetime-local"
@@ -167,12 +166,11 @@ export default function AddPage() {
           </select>
         </div>
 
-        {/* 页面打开时间（不可编辑） */}
         <div className="rounded-xl px-4 pt-2 pb-3 border-3 border-gray-300 dark:border-gray-700">
           <label
             className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
           >
-            页面打开时间
+            记录添加时间
           </label>
           <input
             type="text"
@@ -193,7 +191,7 @@ export default function AddPage() {
             htmlFor="totp"
             className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
           >
-            TOTP验证码
+            TOTP 验证码
           </label>
           <div className="mx-auto max-w-xs">
             <InputOTP
