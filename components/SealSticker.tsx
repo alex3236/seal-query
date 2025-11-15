@@ -3,17 +3,11 @@ import { QRCodeSVG } from "qrcode.react";
 
 export type SealStickerProps = {
   /** 要编码到二维码的文本 */
-  qrValue?: string;
+  qrValue: string;
   /** 两行序列号，例如 ['0000 1709', '5419 1989'] */
-  serialLines?: [string, string];
+  serialLines: [string, string];
   /** 中间的短码，例如 '4G3YG' */
-  badge?: string;
-  /** 底部域名 */
-  domain?: string;
-  /** SVG 宽度（mm） */
-  widthMm?: number; // default 40
-  /** SVG 高度（mm） */
-  heightMm?: number; // default 60
+  badge: string;
 };
 
 /**
@@ -23,16 +17,13 @@ export type SealStickerProps = {
  * 直接把这个组件放到页面即可渲染并打印（SVG 使用 mm 单位，能得到真实世界尺寸）。
  */
 export default function SealSticker({
-  qrValue = "test",
-  serialLines = ["0000 1709", "5419 1989"],
-  badge = "4G3YG",
-  domain = "Alex3236.moe",
-  widthMm = 40,
-  heightMm = 60,
+  qrValue,
+  serialLines,
+  badge,
 }: SealStickerProps) {
   // 我们使用一个定长的 viewBox（单位 px），并用 mm 指定最终渲染尺寸，这样坐标计算方便。
-  const vw = 400; // viewBox width
-  const vh = 600; // viewBox height
+  const widthMm = 40, heightMm = 60;
+  const vw = 400, vh = 600;
 
   // 布局常量（基于 vw/vh）
   const qrBoxW = 260; // 内部圆角矩形区域尺寸
@@ -49,7 +40,7 @@ export default function SealSticker({
         height={`${heightMm}mm`}
         viewBox={`0 0 ${vw} ${vh}`}
         role="img"
-        aria-label="封箱贴"
+        aria-label="Sticker"
       >
         {/* 顶部标题：封箱贴 */}
         <text
@@ -117,10 +108,13 @@ export default function SealSticker({
           扫码查询封箱信息
         </text>
 
-        {/* 底部域名 */}
-        <text x={vw / 2} y={vh - 20} textAnchor="middle" fontSize={50} className="font-extrabold">
-          {domain}
-        </text>
+        {/* 底部 Logo，居中 */}
+        <image
+          href="/logo.svg"
+          y={vh - 60}
+          width={vw}
+          height={40}
+        />
       </svg>
     </div>
   );

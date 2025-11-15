@@ -29,7 +29,6 @@ export default function PrintPage() {
           alert("请输入完整的封箱编号和验证码");
           return;
         }
-        console.log(codeA, codeB);
         // print in new seprate window
         window.open(`/print/${codeA}/${codeB}`, "_blank", "width=800,height=600");
       }}>

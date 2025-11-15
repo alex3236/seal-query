@@ -236,12 +236,12 @@ export default function AddPage() {
             >
               查看
             </a>
-            <a
-              href={`/print/${codes.codeA}/${codes.codeB}`}
-              className="text-blue-600 dark:text-blue-200 hover:underline"
+            <button
+              onClick={() => window.open(`/print/${codes.codeA}/${codes.codeB}`, "_blank", "width=800,height=600")}
+              className="text-blue-600 dark:text-blue-200 hover:underline cursor-pointer"
             >
               打印封箱贴
-            </a>
+            </button>
           </span>
         </div>
       )

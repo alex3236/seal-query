@@ -1,49 +1,24 @@
-"use client";
-
-import SealSticker from "@/components/SealSticker";
+import PrintSealSticker from "@/components/PrintSeal";
+import { verifyCode } from "@/lib/codeVerification";
 import { redirect } from "next/navigation";
-import assert from "node:assert";
-import { Usable, use, useEffect } from "react";
+import { Usable, use } from "react";
 
-export default function PrintSealSticker({ params }: {
+export default function PrintPage({ params }: {
   params: Usable<{ codeA: string; codeB: string }>
 }) {
-  const APP_URL = process.env.APP_URL?.replace(/\/$/, "") || "";
+  const p = use(params);
 
-  useEffect(() => {
-    if (!APP_URL) return;
-    const timer = setTimeout(() => {
-      window.print();
-    }, 500);
-
-    const handlePrintAfter = () => {
-      window.close();
-    };
-
-    window.addEventListener('afterprint', handlePrintAfter);
-
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener('afterprint', handlePrintAfter);
-    };
-  }, [APP_URL]);
-
-  if (!APP_URL) {
+  if (!process.env.APP_URL) {
+    console.error("APP_URL is not set");
     redirect("/");
   }
+  if (p.codeA.length !== 16 || p.codeB.length !== 5) {
+    redirect(`/print`);
+  }
+  const { valid } = verifyCode(p.codeA, p.codeB);
+  if (!valid) {
+    redirect(`/print`);
+  }
 
-  const p = use(params);
-  assert(p.codeA.length === 16, "codeA length must be 16");
-  assert(p.codeB.length === 5, "codeB length must be 5");
-  const codeA = p.codeA;
-  const codeB = p.codeB;
-  const qrValue = `${APP_URL}/s/${codeA}`;
-  const serialLines: [string, string] = [
-    codeA.slice(0, 4) + ' ' + codeA.slice(4, 8),
-    codeA.slice(8, 12) + ' ' + codeA.slice(12, 16),
-  ]
-
-  return <div>
-    <SealSticker qrValue={qrValue} serialLines={serialLines} badge={codeB} />
-  </div>
+  return <PrintSealSticker codeA={p.codeA} codeB={p.codeB} />
 }
